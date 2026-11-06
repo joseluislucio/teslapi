@@ -11,6 +11,21 @@ a tu NAS por SMB y se ven en un portal web en tu red.
 > titular. Una dashcam graba a otras personas y cada país lo regula distinto: usarla conforme a la ley
 > es responsabilidad tuya.
 
+## Capturas
+
+![Inicio: estado del archivado, uso del pendrive, dispositivo de casa, Wi-Fi y salud de la Pi](docs/screenshots/home.png)
+
+| | |
+|---|---|
+| ![Clips agrupados por día, con su categoría y si están en el NAS](docs/screenshots/clips.png) | ![Visor sincronizado de las cuatro cámaras del coche](docs/screenshots/viewer.png) |
+| **Clips** por día, de la Pi o del NAS | **Visor** con las cuatro cámaras sincronizadas |
+| ![Totales e historial de archivado](docs/screenshots/archive.png) | ![Ajustes de detección de casa, Wi-Fi y NAS](docs/screenshots/settings.png) |
+| **Archivado**: totales e historial | **Ajustes** de detección de casa, Wi-Fi y NAS |
+| ![Tiempo de arranque y vida de la microSD](docs/screenshots/system.png) | ![Inicio en un móvil](docs/screenshots/mobile.png) |
+| **Sistema**: salud, arranque y vida de la microSD | También funciona en el **móvil** |
+
+Las capturas muestran el portal en inglés con datos de demostración: los clips son sintéticos, y los nombres de lugar, red y dispositivo son inventados.
+
 ## Cómo funciona
 
 ```

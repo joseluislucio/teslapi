@@ -11,6 +11,21 @@ your NAS over SMB, and you can watch them in a web portal on your home network.
 > owner. Dashcam footage captures other people, and the rules differ by country: using it lawfully
 > is up to you.
 
+## Screenshots
+
+![Home: archiving status, car drive usage, home device, Wi-Fi and Pi health](docs/screenshots/home.png)
+
+| | |
+|---|---|
+| ![Clips grouped by day, with their category and whether they are on the NAS](docs/screenshots/clips.png) | ![Synchronized viewer for the car's four cameras](docs/screenshots/viewer.png) |
+| **Clips** by day, from the Pi or the NAS | **Viewer** with the four cameras in sync |
+| ![Archive totals and history](docs/screenshots/archive.png) | ![Home detection, Wi-Fi and NAS settings](docs/screenshots/settings.png) |
+| **Archive** totals and history | **Settings** for home detection, Wi-Fi and NAS |
+| ![Boot time and microSD lifetime](docs/screenshots/system.png) | ![Home page on a phone](docs/screenshots/mobile.png) |
+| **System** health, boot time and microSD lifetime | Works on a **phone** too |
+
+Demo data: the clips are synthetic, and the place, network and device names are made up.
+
 ## How it works
 
 ```
