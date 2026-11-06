@@ -18,6 +18,7 @@ Security hardening before the first public release.
 
 ### Added
 
+- The install scripts now run on macOS, Linux and Windows (`scripts/flash.py`, `scripts/deploy.py`).
 - MIT licence, and third-party notices in the repository and in release packages.
 - Optional HTTPS, optional SMB3 encryption, firewall, SSH hardening and service sandboxing.
 - `Host`, `Origin` and `Content-Type` checks, Content-Security-Policy and other security headers.

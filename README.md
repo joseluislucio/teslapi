@@ -59,19 +59,30 @@ own Wi-Fi network.
 ## Requirements
 
 - Raspberry Pi Zero 2 W and a high-endurance microSD (128 GB recommended)
-- A computer with an SD reader. `scripts/flash.sh` runs on macOS
+- A computer with an SD reader, on macOS, Linux or Windows
+- Python 3 and an SSH client (Windows 10 and later include one)
 - A NAS or computer with an SMB share, and 2.4 GHz Wi-Fi reaching the car
 - Go (see `daemon/go.mod`) and Node 22 to build
 
 ## Getting started
 
-1. Run `scripts/flash.sh /dev/diskN`. It writes a pinned, checksum-verified Raspberry Pi OS Lite
-   (64-bit, Trixie) with your SSH key and home Wi-Fi, which it asks for, or reads from
-   `TP_WIFI_SSID`, `TP_WIFI_PASS` and `TP_COUNTRY`. It also prints the setup network password, so
-   note it down.
-2. Put the card in the Zero 2 W, power it and wait for `ssh <user>@teslapi.local`.
-3. Run `make provision` to create partitions, the drive image, the system and the read-only root.
-   It also removes the temporary copies of the Wi-Fi password. Then `sudo reboot`.
+1. Write the card. Run the script with no arguments to list the cards it can see:
+
+   | System | Command |
+   |---|---|
+   | macOS | `python3 scripts/flash.py /dev/diskN` |
+   | Linux | `python3 scripts/flash.py /dev/sdX` |
+   | Windows, in a terminal opened as administrator | `py scripts\flash.py N` |
+
+   It writes a pinned, checksum-verified Raspberry Pi OS Lite (64-bit, Trixie) with your SSH key and
+   home Wi-Fi, which it asks for, or reads from `TP_WIFI_SSID`, `TP_WIFI_PASS` and `TP_COUNTRY`. It
+   refuses boot and system disks, and reads the card back to check it. It also prints the setup
+   network password, so note it down.
+2. Put the card in the Zero 2 W, power it and wait for `ssh <user>@teslapi.local`. If your computer
+   does not resolve `.local` names, set `TESLAPI_HOST=<user>@<ip of the Pi>` in `.deploy.env`.
+3. Run `python3 scripts/deploy.py provision` (`py scripts\deploy.py provision` on Windows) to create
+   partitions, the drive image, the system and the read-only root. It also removes the temporary
+   copies of the Wi-Fi password. Then `sudo reboot` on the Pi.
 4. Connect the Pi to the car (or a computer) through the **USB** port, not PWR, and open
    `http://teslapi.local`:
    - **With Wi-Fi configured**, the wizard asks how to detect home, for the NAS and for a portal
@@ -90,7 +101,7 @@ and Portuguese.
 Home detection: **Bluetooth** (a fixed device; Wi-Fi only turns on when it sees it) or **Wi-Fi** (it is
 home when it connects; the radio stays on).
 
-To update: `make deploy`. Settings for the scripts go in environment variables or in `.deploy.env`
+To update: `python3 scripts/deploy.py`. Settings for the scripts go in environment variables or in `.deploy.env`
 (see `.deploy.env.example`).
 
 ## Rescue
@@ -107,7 +118,7 @@ returning it to the car, or Wi-Fi will stay on everywhere.
 | `web/` | Portal (Svelte 5 + Tailwind 4), compiled into the binary |
 | `system/` | USB gadget script, systemd units, NetworkManager, SSH, firewall, `config.txt` |
 | `setup/provision.sh` | Provisions the Pi (idempotent) |
-| `scripts/` | `flash.sh` (writes the microSD), `deploy.sh` (builds and deploys) |
+| `scripts/` | `flash.py` (writes the microSD), `deploy.py` (builds and deploys) |
 | `test/` | exFAT and FAT32 test images, and end-to-end tests |
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) to work on it.

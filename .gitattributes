@@ -1,0 +1,8 @@
+# Todo lo que acaba en la Pi va con LF, también si se clona en Windows.
+* text=auto
+*.sh text eol=lf
+*.py text eol=lf
+setup/** text eol=lf
+system/** text eol=lf
+*.png binary
+*.gz binary

@@ -55,7 +55,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: ShellCheck
-        run: shellcheck -S warning scripts/*.sh setup/*.sh system/*.sh
+        run: shellcheck -S warning setup/*.sh system/*.sh
   secrets:
     runs-on: ubuntu-latest
     steps:

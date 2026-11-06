@@ -1,0 +1,200 @@
+name: Install scripts
+# Writes the real Raspberry Pi OS image to a throwaway virtual disk on each system, then checks the
+# result with a separate script. Nothing here touches a real card.
+on:
+  push:
+    paths:
+      - scripts/**
+      - system/boot/**
+      - test/install/**
+      - .github/workflows/install.yml
+  pull_request:
+    paths:
+      - scripts/**
+      - system/boot/**
+      - test/install/**
+      - .github/workflows/install.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+env:
+  TP_WIFI_SSID: 'Test "Net" & #1: sí'
+  TP_WIFI_PASS: "pa\"ss\\w&rd#'1"
+  TP_COUNTRY: es
+  TP_TIMEZONE: Europe/Madrid
+  TP_USER: testuser
+  TP_IMAGE_DIR: ${{ github.workspace }}/.image
+  DISK_BYTES: "17179869184"
+jobs:
+  unit:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python test/install/test_scripts.py
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: daemon/go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build the deploy package
+        working-directory: web
+        run: npm ci
+      - run: python scripts/deploy.py --package pkg.tar.gz
+      - name: The package unpacks with working scripts
+        shell: python
+        run: |
+          import tarfile
+          with tarfile.open("pkg.tar.gz") as t:
+              names = {m.name: m for m in t.getmembers()}
+              assert names["./teslapid"].mode == 0o755 and names["./teslapid"].size > 1_000_000
+              script = t.extractfile(names["./setup/provision.sh"]).read()
+              assert names["./setup/provision.sh"].mode == 0o755
+              assert script.startswith(b"#!/bin/bash\n") and b"\r" not in script
+              elf = t.extractfile(names["./teslapid"]).read(20)
+              assert elf[:4] == b"\x7fELF" and elf[18] == 183, "must be linux/arm64"
+          print("package OK")
+
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: .image
+          key: raspios-2026-10-06
+      - name: Create a virtual disk and an SSH key
+        run: |
+          truncate -s "$DISK_BYTES" "$RUNNER_TEMP/card.img"
+          DEV=$(sudo losetup -fP --show "$RUNNER_TEMP/card.img")
+          echo "DEV=$DEV" >> "$GITHUB_ENV"
+          ssh-keygen -q -t ed25519 -N '' -C 'test key' -f "$RUNNER_TEMP/key"
+          echo "TP_PUBKEY=$RUNNER_TEMP/key.pub" >> "$GITHUB_ENV"
+      - name: Refuses a virtual disk without the test override
+        run: |
+          if echo BORRAR | python3 scripts/flash.py "$DEV"; then echo "wrote without permission"; exit 1; fi
+      - name: Refuses the system disk even with the override
+        run: |
+          ROOT=/dev/$(lsblk -no PKNAME "$(findmnt -no SOURCE /)")
+          echo "system disk: $ROOT"
+          if echo BORRAR | TP_FLASH_TEST_DISK="$ROOT" python3 scripts/flash.py "$ROOT"; then echo "wrote to the system disk"; exit 1; fi
+      - name: Refuses a disk with /boot mounted, even with the override
+        run: |
+          truncate -s 64M "$RUNNER_TEMP/sys.img"
+          SYS=$(sudo losetup -f --show "$RUNNER_TEMP/sys.img")
+          sudo mkfs.ext4 -q "$SYS"
+          sudo mkdir -p /boot/teslapi-test
+          sudo mount "$SYS" /boot/teslapi-test
+          out=$(echo BORRAR | TP_FLASH_TEST_DISK="$SYS" python3 scripts/flash.py "$SYS" 2>&1) && { echo "$out"; echo "wrote to a system disk"; exit 1; }
+          echo "$out"
+          echo "$out" | grep -q 'disco del sistema'
+          sudo umount /boot/teslapi-test
+          sudo losetup -d "$SYS"
+      - name: Refuses a card that is too small, without touching it
+        run: |
+          truncate -s 8G "$RUNNER_TEMP/small.img"
+          printf 'marker' | dd of="$RUNNER_TEMP/small.img" conv=notrunc status=none
+          SMALL=$(sudo losetup -fP --show "$RUNNER_TEMP/small.img")
+          if echo BORRAR | TP_FLASH_TEST_DISK="$SMALL" python3 scripts/flash.py "$SMALL"; then echo "accepted a small card"; exit 1; fi
+          sudo losetup -d "$SMALL"
+          test "$(head -c 6 "$RUNNER_TEMP/small.img")" = marker
+      - name: Flash
+        run: echo BORRAR | TP_FLASH_TEST_DISK="$DEV" python3 scripts/flash.py "$DEV"
+      - name: Check the result
+        run: |
+          sudo partprobe "$DEV" || true
+          MP=$(mktemp -d)
+          sudo mount -t vfat -o ro "${DEV}p1" "$MP"
+          sudo -E python3 test/install/check_card.py "$DEV" "$MP" "$DISK_BYTES"
+          sudo umount "$MP"
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: .image
+          key: raspios-2026-10-06
+      - name: Create a virtual disk and an SSH key
+        run: |
+          mkfile -n "$DISK_BYTES" "$RUNNER_TEMP/card.img"
+          DEV=$(hdiutil attach -imagekey diskimage-class=CRawDiskImage -nomount "$RUNNER_TEMP/card.img" | awk 'NR==1{print $1}')
+          echo "DEV=$DEV" >> "$GITHUB_ENV"
+          diskutil info "$DEV" | grep -E 'Internal|Removable|Protocol|Virtual' || true
+          ssh-keygen -q -t ed25519 -N '' -C 'test key' -f "$RUNNER_TEMP/key"
+          echo "TP_PUBKEY=$RUNNER_TEMP/key.pub" >> "$GITHUB_ENV"
+      - name: Refuses the internal disk
+        run: |
+          if echo BORRAR | python3 scripts/flash.py /dev/disk0; then echo "wrote to the internal disk"; exit 1; fi
+      - name: Flash
+        run: echo BORRAR | TP_FLASH_TEST_DISK="$DEV" python3 scripts/flash.py "$DEV"
+      - name: Check the result
+        run: |
+          hdiutil detach "$DEV" -force || true
+          DEV=$(hdiutil attach -imagekey diskimage-class=CRawDiskImage -nobrowse "$RUNNER_TEMP/card.img" | awk 'NR==1{print $1}')
+          MP=$(diskutil info "${DEV}s1" | awk -F': *' '/Mount Point/{print $2}')
+          echo "mounted $DEV at $MP"
+          sudo -E python3 test/install/check_card.py "${DEV/disk/rdisk}" "$MP" "$DISK_BYTES"
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/cache@v4
+        with:
+          path: .image
+          key: raspios-2026-10-06
+      - name: Create a virtual disk and an SSH key
+        shell: pwsh
+        run: |
+          $vhd = "$env:RUNNER_TEMP\card.vhd"
+          $mb = [int64]$env:DISK_BYTES / 1MB
+          "create vdisk file=`"$vhd`" maximum=$mb type=expandable`nselect vdisk file=`"$vhd`"`nattach vdisk`n" | Out-File -Encoding ascii "$env:RUNNER_TEMP\dp.txt"
+          diskpart /s "$env:RUNNER_TEMP\dp.txt"
+          if ($LASTEXITCODE) { exit 1 }
+          $d = Get-Disk | Where-Object { "$($_.BusType)" -eq 'File Backed Virtual' -and $_.Size -eq [int64]$env:DISK_BYTES } | Select-Object -First 1
+          if (-not $d) { Get-Disk | Format-Table Number,BusType,Size; exit 1 }
+          "DEV=$($d.Number)" >> $env:GITHUB_ENV
+          "DISK_SIZE=$($d.Size)" >> $env:GITHUB_ENV
+          ssh-keygen -q -t ed25519 -N '""' -C 'test key' -f "$env:RUNNER_TEMP\key"
+          "TP_PUBKEY=$env:RUNNER_TEMP\key.pub" >> $env:GITHUB_ENV
+      - name: Refuses a virtual disk without the test override
+        shell: pwsh
+        run: |
+          'BORRAR' | python scripts/flash.py $env:DEV
+          if ($LASTEXITCODE -eq 0) { Write-Error 'wrote without permission'; exit 1 }
+          exit 0
+      - name: Refuses the system disk even with the override
+        shell: pwsh
+        run: |
+          $sys = (Get-Disk | Where-Object { $_.IsBoot -or $_.IsSystem } | Select-Object -First 1).Number
+          "system disk: $sys"
+          $env:TP_FLASH_TEST_DISK = "$sys"
+          'BORRAR' | python scripts/flash.py $sys
+          if ($LASTEXITCODE -eq 0) { Write-Error 'wrote to the system disk'; exit 1 }
+          exit 0
+      - name: Flash
+        shell: pwsh
+        run: |
+          $env:TP_FLASH_TEST_DISK = $env:DEV
+          'BORRAR' | python scripts/flash.py $env:DEV
+          exit $LASTEXITCODE
+      - name: Check the result
+        shell: pwsh
+        run: |
+          $p = Get-Partition -DiskNumber $env:DEV -PartitionNumber 1
+          $p | Add-PartitionAccessPath -AssignDriveLetter
+          $l = (Get-Partition -DiskNumber $env:DEV -PartitionNumber 1).DriveLetter
+          python test/install/check_card.py "\\.\PhysicalDrive$env:DEV" "${l}:\" $env:DISK_SIZE
+          exit $LASTEXITCODE

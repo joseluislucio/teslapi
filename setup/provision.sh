@@ -1,7 +1,7 @@
 #!/bin/bash
 # Aprovisiona una Raspberry Pi Zero 2 W con Raspberry Pi OS Lite 64-bit (Trixie)
 # recién instalado. Se ejecuta EN LA PI como root, desde el directorio que sube
-# scripts/deploy.sh (contiene teslapid, system/ y setup/). Es idempotente: se puede
+# scripts/deploy.py (contiene teslapid, system/ y setup/). Es idempotente: se puede
 # repetir y cada paso comprueba si ya está hecho.
 #
 #   sudo ./setup/provision.sh            # todo
@@ -45,12 +45,12 @@ step_partition() {
 	root_start=$(cat /sys/block/$dname/"$(basename "$ROOTDEV")"/start)
 	root_size=$(cat /sys/block/$dname/"$(basename "$ROOTDEV")"/size)
 	if [ ! -b "${P}3" ]; then
-		# Sin la partición provisional de flash.sh, la raíz se habrá expandido entera y
+		# Sin la partición provisional de flash.py, la raíz se habrá expandido entera y
 		# una ext4 montada no se puede encoger: hay que volver a grabar la tarjeta.
 		local disk_sectors
 		disk_sectors=$(blockdev --getsz "$DISK")
 		if [ $(( root_start + root_size )) -gt $(( disk_sectors - 8*1024*1024*2 )) ]; then
-			die "la raíz ocupa toda la tarjeta. Vuelve a grabarla con scripts/flash.sh."
+			die "la raíz ocupa toda la tarjeta. Vuelve a grabarla con scripts/flash.py."
 		fi
 		local p3_start=$(( (root_start + ROOT_SIZE_GB*1024*1024*2 + 8191) / 8192 * 8192 ))
 		echo "${p3_start},+,83" | sfdisk --force --no-reread -a "$DISK"
@@ -146,7 +146,7 @@ step_install() {
 	systemctl restart nftables.service
 }
 
-# La clave Wi-Fi que flash.sh dejó para el primer arranque ya no hace falta: el daemon usa sus
+# La clave Wi-Fi que flash.py dejó para el primer arranque ya no hace falta: el daemon usa sus
 # propios perfiles en /data. Sin esto seguiría en claro en la partición de arranque (legible
 # desde cualquier ordenador) y en las copias de cloud-init y netplan.
 step_scrub() {
@@ -176,7 +176,7 @@ step_config() {
 		echo "Ya existe $cfg (se edita desde el portal)"
 		return
 	fi
-	# Valores que pasa deploy.sh por entorno; lo que falte lo pide el asistente del portal.
+	# Valores que pasa deploy.py por entorno; lo que falte lo pide el asistente del portal.
 	python3 - "$cfg" <<'PY'
 import json, os, sys
 cfg = {

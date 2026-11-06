@@ -24,10 +24,10 @@ e2e:
 	python3 test/e2e/viewer_sync.py http://localhost:8080 "TeslaCam/SavedClips/$(EVENT)" "$(EVENT)"
 
 deploy:
-	scripts/deploy.sh
+	python3 scripts/deploy.py
 
 provision:
-	scripts/deploy.sh provision
+	python3 scripts/deploy.py provision
 
 # Comprueba que todos los idiomas tienen todas las claves y que no hay claves sin definir.
 i18n:

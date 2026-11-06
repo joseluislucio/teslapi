@@ -36,7 +36,7 @@ func TestShippedTemplateIsValid(t *testing.T) {
 	}
 }
 
-// Valores con comillas, & y # (como los que volcará flash.sh) llegan intactos.
+// Valores con comillas, & y # (como los que volcará flash.py) llegan intactos.
 func TestAwkwardWiFiValuesSurvive(t *testing.T) {
 	b := []byte("wifi_ssid = Mi \"Casa\" & Co\nwifi_password = p@ss\\w$rd #1\n")
 	c := config.Defaults()
