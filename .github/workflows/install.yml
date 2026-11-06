@@ -38,7 +38,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: python test/install/test_scripts.py
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with:
           go-version-file: daemon/go.mod
       - uses: actions/setup-node@v4
