@@ -1,0 +1,23 @@
+{
+  "name": "teslapi-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node scripts/compress.mjs",
+    "check": "svelte-check"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^5.1.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "svelte": "^5.57.3",
+    "svelte-check": "^4.7.7",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3",
+    "vite": "^6.4.5"
+  },
+  "dependencies": {
+    "@lucide/svelte": "^1.65.0",
+    "leaflet": "1.9"
+  }
+}

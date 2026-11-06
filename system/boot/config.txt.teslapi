@@ -1,0 +1,10 @@
+# --- teslapi ---
+# (provision.sh además desactiva en su sitio audio, cámara, pantalla, KMS e initramfs)
+# Gadget USB: el puerto "USB" de la Zero 2 W como dispositivo.
+dtoverlay=dwc2,dr_mode=peripheral
+# Arranque rápido: sin logo, sin espera y CPU a tope los primeros segundos.
+disable_splash=1
+boot_delay=0
+initial_turbo=30
+hdmi_ignore_hotplug=1
+# --- fin teslapi ---

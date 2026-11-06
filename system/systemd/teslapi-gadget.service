@@ -1,0 +1,14 @@
+[Unit]
+Description=teslapi: pendrive USB para el coche
+DefaultDependencies=no
+RequiresMountsFor=/data
+After=systemd-modules-load.service
+Before=sysinit.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/opt/teslapi/teslapi-gadget.sh
+
+[Install]
+WantedBy=sysinit.target

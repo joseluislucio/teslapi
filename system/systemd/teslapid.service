@@ -1,0 +1,37 @@
+[Unit]
+Description=teslapi: archivado al NAS y portal web
+After=teslapi-gadget.service bluetooth.service NetworkManager.service
+Wants=bluetooth.service NetworkManager.service
+Requires=teslapi-gadget.service
+
+[Service]
+ExecStart=/opt/teslapi/teslapid
+Restart=always
+RestartSec=3
+# El coche escribe a la vez: el archivado no debe quitarle E/S ni CPU.
+Nice=10
+IOSchedulingClass=idle
+MemoryHigh=160M
+
+# Aislamiento. Sigue siendo root porque monta imágenes y recursos SMB y toca el gadget USB, pero
+# con lo mínimo. apt y los remontajes salen como unidades aparte (ver sysupdate.ExecRunner).
+NoNewPrivileges=yes
+CapabilityBoundingSet=CAP_SYS_ADMIN CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_DAC_OVERRIDE CAP_DAC_READ_SEARCH CAP_FOWNER CAP_CHOWN CAP_SETUID CAP_SETGID CAP_KILL
+ProtectHome=yes
+PrivateTmp=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectKernelLogs=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+LockPersonality=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+RestrictNamespaces=yes
+RemoveIPC=yes
+SystemCallArchitectures=native
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

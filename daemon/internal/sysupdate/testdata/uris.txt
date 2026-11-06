@@ -1,0 +1,40 @@
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Calculating upgrade...
+The following packages will be upgraded:
+  apt apt-utils ca-certificates cifs-utils curl libapt-pkg7.0 libbrotli1
+  libcamera-ipa libcamera0.7 libcurl3t64-gnutls libcurl4t64 libexpat1 liblzma5
+  libnss3 libntfs-3g89t64 librpicam-app1 ntfs-3g raspi-config
+  raspi-config-core rpi-connect-lite rpi-eeprom rpicam-apps-core
+  rpicam-apps-lite tzdata vim-common vim-tiny xz-utils
+27 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+Need to get 35.1 MB of archives.
+After this operation, 17.7 MB of additional disk space will be used.
+'http://archive.raspberrypi.com/debian/pool/main/libc/libcamera/libcamera0.7_0.7.2%2brpt20261009-1_arm64.deb' libcamera0.7_0.7.2+rpt20261009-1_arm64.deb 825002 MD5Sum:453a1cc6dd0274152d5dc08bdd481acf
+'http://archive.raspberrypi.com/debian/pool/main/libc/libcamera/libcamera-ipa_0.7.2%2brpt20261009-1_arm64.deb' libcamera-ipa_0.7.2+rpt20261009-1_arm64.deb 1120272 MD5Sum:408b508b2729e9c6121e4d8ee13c8de2
+'http://archive.raspberrypi.com/debian/pool/main/r/rpicam-apps/librpicam-app1_1.14.0-1_arm64.deb' librpicam-app1_1.14.0-1_arm64.deb 286466 MD5Sum:5523e8c0818a0db4e879f1bba611a706
+'http://archive.raspberrypi.com/debian/pool/main/r/raspi-config/raspi-config-core_20261026%2b2_all.deb' raspi-config-core_20261026+2_all.deb 35974 MD5Sum:94b854a84d020ff4b1f6cd646f20d9ee
+'http://archive.raspberrypi.com/debian/pool/main/r/raspi-config/raspi-config_20261026%2b2_all.deb' raspi-config_20261026+2_all.deb 12778 MD5Sum:b70af37e7437bcfe6a734cad0b6d55d8
+'http://archive.raspberrypi.com/debian/pool/main/r/rpi-connect-lite/rpi-connect-lite_2.14.0_arm64.deb' rpi-connect-lite_2.14.0_arm64.deb 8994508 MD5Sum:94ef55ca9f5997a7d5219bab9065d678
+'http://archive.raspberrypi.com/debian/pool/main/r/rpi-eeprom/rpi-eeprom_28.36-1_all.deb' rpi-eeprom_28.36-1_all.deb 15050598 MD5Sum:62473a7b54300e806fa9df5aa4f2059d
+'http://archive.raspberrypi.com/debian/pool/main/r/rpicam-apps/rpicam-apps-core_1.14.0-1_arm64.deb' rpicam-apps-core_1.14.0-1_arm64.deb 264736 MD5Sum:06f7f3b3022ca87e4310df2b5e2e99e8
+'http://archive.raspberrypi.com/debian/pool/main/r/rpicam-apps/rpicam-apps-lite_1.14.0-1_all.deb' rpicam-apps-lite_1.14.0-1_all.deb 5194 MD5Sum:4acd4fbcee092eb910c945adccce1eff
+'http://deb.debian.org/debian-security/pool/updates/main/x/xz-utils/liblzma5_5.8.1-1%2bdeb13u2_arm64.deb' liblzma5_5.8.1-1+deb13u2_arm64.deb 302984 
+'http://deb.debian.org/debian-security/pool/updates/main/a/apt/libapt-pkg7.0_3.0.4_arm64.deb' libapt-pkg7.0_3.0.4_arm64.deb 978204 
+'http://deb.debian.org/debian-security/pool/updates/main/a/apt/apt_3.0.4_arm64.deb' apt_3.0.4_arm64.deb 1362704 
+'http://deb.debian.org/debian-security/pool/updates/main/a/apt/apt-utils_3.0.4_arm64.deb' apt-utils_3.0.4_arm64.deb 315768 
+'http://deb.debian.org/debian-security/pool/updates/main/e/expat/libexpat1_2.9.0-1%7edeb13u1_arm64.deb' libexpat1_2.9.0-1~deb13u1_arm64.deb 113920 
+'http://deb.debian.org/debian/pool/main/t/tzdata/tzdata_2026f-0%2bdeb13u1_all.deb' tzdata_2026f-0+deb13u1_all.deb 267528 
+'http://deb.debian.org/debian-security/pool/updates/main/v/vim/vim-tiny_9.1.1230-2%2bdeb13u1_arm64.deb' vim-tiny_2%3a9.1.1230-2+deb13u1_arm64.deb 707960 
+'http://deb.debian.org/debian-security/pool/updates/main/v/vim/vim-common_9.1.1230-2%2bdeb13u1_all.deb' vim-common_2%3a9.1.1230-2+deb13u1_all.deb 421052 
+'http://deb.debian.org/debian-security/pool/updates/main/c/ca-certificates/ca-certificates_20250419%2bdeb13u1_all.deb' ca-certificates_20250419+deb13u1_all.deb 160720 
+'http://deb.debian.org/debian-security/pool/updates/main/x/xz-utils/xz-utils_5.8.1-1%2bdeb13u2_arm64.deb' xz-utils_5.8.1-1+deb13u2_arm64.deb 657952 
+'http://deb.debian.org/debian-security/pool/updates/main/c/cifs-utils/cifs-utils_7.4-1%2bdeb13u2_arm64.deb' cifs-utils_2%3a7.4-1+deb13u2_arm64.deb 99156 
+'http://deb.debian.org/debian-security/pool/updates/main/b/brotli/libbrotli1_1.1.0-2%2bdeb13u1_arm64.deb' libbrotli1_1.1.0-2+deb13u1_arm64.deb 293896 
+'http://deb.debian.org/debian-security/pool/updates/main/c/curl/curl_8.14.1-2%2bdeb13u7_arm64.deb' curl_8.14.1-2+deb13u7_arm64.deb 262796 
+'http://deb.debian.org/debian-security/pool/updates/main/c/curl/libcurl4t64_8.14.1-2%2bdeb13u7_arm64.deb' libcurl4t64_8.14.1-2+deb13u7_arm64.deb 361184 
+'http://deb.debian.org/debian-security/pool/updates/main/c/curl/libcurl3t64-gnutls_8.14.1-2%2bdeb13u7_arm64.deb' libcurl3t64-gnutls_8.14.1-2+deb13u7_arm64.deb 354256 
+'http://deb.debian.org/debian-security/pool/updates/main/n/nss/libnss3_3.110-1%2bdeb13u5_arm64.deb' libnss3_2%3a3.110-1+deb13u5_arm64.deb 1290684 
+'http://deb.debian.org/debian-security/pool/updates/main/n/ntfs-3g/ntfs-3g_2022.10.3-5%2bdeb13u3_arm64.deb' ntfs-3g_1%3a2022.10.3-5+deb13u3_arm64.deb 378736 
+'http://deb.debian.org/debian-security/pool/updates/main/n/ntfs-3g/libntfs-3g89t64_2022.10.3-5%2bdeb13u3_arm64.deb' libntfs-3g89t64_1%3a2022.10.3-5+deb13u3_arm64.deb 152640 

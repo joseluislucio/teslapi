@@ -1,0 +1,70 @@
+# teslapi - optional configuration file / fichero de configuracion opcional
+#
+# You can fill in as little or as much as you like, here or later in the web portal.
+# Puedes rellenar lo que quieras aqui o mas tarde en el portal web.
+#
+# - One "key = value" per line. Lines starting with # are comments. Empty values are ignored.
+# - The file is read at boot, only when it changes. Edits made later in the portal are
+#   NOT overwritten at every boot.
+# - Passwords are removed from this file once they have been saved on the Pi.
+#
+# - Una linea "clave = valor". Las que empiezan por # son comentarios. Los vacios se ignoran.
+# - Se lee al arrancar, solo cuando cambia. Lo que edites luego en el portal no se pisa.
+# - Las contrasenas se borran de este fichero cuando quedan guardadas en la Pi.
+
+# Portal language / idioma del portal: es, en, fr, de, it, pt (empty = browser's language)
+language =
+
+# --- Home Wi-Fi (2.4 GHz) / Wi-Fi de casa --------------------------------------------
+wifi_ssid =
+wifi_password =
+# Second Wi-Fi (optional), tried if the first one is not available / segunda Wi-Fi (opcional)
+wifi2_ssid =
+wifi2_password =
+
+# --- How the Pi knows the car is home / como sabe que el coche esta en casa -----------
+# bluetooth = a fixed Bluetooth device (EV charger, beacon). Lowest power use.
+# wifi      = the Pi counts as home when it connects to the Wi-Fi above.
+home_detection = bluetooth
+# Bluetooth device (find it in the portal with "Search"). Address or name.
+device_address =
+device_name =
+# Other home devices (a beacon, a speaker...): seeing ANY of them also counts as home.
+# Comma-separated; each one is a Bluetooth address (AA:BB:CC:DD:EE:FF) or a name.
+# Otros dispositivos de casa: ver cualquiera de ellos tambien cuenta como estar en casa.
+extra_devices =
+# Minimum signal in dBm (-90 = far, -60 = close). Empty = default.
+device_min_rssi =
+
+# --- Where the videos are saved / donde se guardan los videos (SMB share) -------------
+smb_share =
+smb_folder = TeslaCam
+smb_user =
+smb_password =
+smb_domain =
+smb_version =
+# Encrypt the connection (SMB3): yes / no. The server must support it; copying gets slower.
+smb_encrypt =
+
+# --- Archiving / archivado -------------------------------------------------------------
+# Also copy the continuous recording (RecentClips): yes / no
+archive_recent_clips =
+# Free space below this percentage before deleting clips already on the NAS
+free_space_percent =
+
+# --- Portal -----------------------------------------------------------------------------
+# Password to open the portal, at least 8 characters. Empty = the wizard asks for it.
+# Contrasena del portal, al menos 8 caracteres. Vacia = la pide el asistente.
+portal_password =
+
+# --- Setup network / red de configuracion -------------------------------------------------
+# Without Wi-Fi, the Pi opens a network called TeslaPi-XXXX for the wizard, never an open one.
+# Put its password here (at least 8 characters), or the Pi makes one up and leaves it on this
+# partition, in teslapi-setup-network.txt. It turns itself off after 15 idle minutes.
+# Sin Wi-Fi, la Pi emite TeslaPi-XXXX para el asistente, nunca abierta. Si no pones contrasena
+# aqui, genera una y la deja en teslapi-setup-network.txt. Se apaga tras 15 minutos sin uso.
+setup_ap_password =
+
+# --- Rescue / rescate ----------------------------------------------------------------------
+# 1 = keep the Wi-Fi always on (and SSH reachable), even without seeing the home device.
+force_wifi = 0

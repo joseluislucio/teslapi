@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+/* Tokens: oscuro por defecto (el portal se abre casi siempre de noche en el garaje),
+   claro si el sistema lo pide. Los colores de serie salen de la paleta validada
+   (skill dataviz) y los de estado son fijos. */
+:root {
+  color-scheme: dark;
+  --bg: #0b0809;
+  --bg-glow-1: rgba(229, 25, 44, 0.14);
+  --bg-glow-2: rgba(255, 106, 61, 0.07);
+  --surface: rgba(255, 255, 255, 0.035);
+  --surface-2: rgba(255, 255, 255, 0.06);
+  --surface-solid: #14100f;
+  --border: rgba(255, 255, 255, 0.075);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text: #eef1f5;
+  --text-2: #a9b1bd;
+  --text-3: #6f7886;
+  --accent: #e5192c;
+  --accent-2: #ff6a3d;
+  --accent-ink: #ffffff;
+  --good: #22c55e;
+  --warning: #fab219;
+  --serious: #ec835a;
+  --critical: #ff6b6b;
+  --series-1: #ff4d5a;
+  --series-2: #ff9f43;
+  --series-3: #ffd166;
+  --series-4: #d946a8;
+  --series-5: #d8d2d2;
+  --free: #2b2223;
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 12px 32px -12px rgba(0, 0, 0, 0.6);
+  --map-filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9) saturate(0.6);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg: #f6f3f3;
+    --bg-glow-1: rgba(211, 16, 31, 0.09);
+    --bg-glow-2: rgba(238, 125, 26, 0.07);
+    --surface: rgba(255, 255, 255, 0.75);
+    --surface-2: rgba(15, 23, 42, 0.04);
+    --surface-solid: #ffffff;
+    --border: rgba(15, 23, 42, 0.08);
+    --border-strong: rgba(15, 23, 42, 0.16);
+    --text: #0d1117;
+    --text-2: #4a5361;
+    --text-3: #7a8391;
+    --accent: #d3101f;
+    --accent-2: #ee7d1a;
+    --accent-ink: #ffffff;
+    --good: #138a36;
+    --warning: #b7791f;
+    --serious: #c2410c;
+    --critical: #c4202e;
+    --series-1: #d3101f;
+    --series-2: #ee7d1a;
+    --series-3: #7a5c00;
+    --series-4: #b3267f;
+    --series-5: #2f2a2a;
+    --free: #ebe4e4;
+    --shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 32px -16px rgba(15, 23, 42, 0.18);
+    --map-filter: none;
+  }
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter var", Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "cv11", "ss01";
+}
+
+body {
+  min-height: 100dvh;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, var(--bg-glow-1), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, var(--bg-glow-2), transparent 55%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+.num { font-variant-numeric: tabular-nums; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-weight: 600;
+}
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 38px; padding: 0 16px; border-radius: 12px;
+  font-size: 14px; font-weight: 600;
+  background: var(--surface-2); color: var(--text);
+  border: 1px solid var(--border);
+  transition: background .15s, border-color .15s, transform .05s;
+  white-space: nowrap;
+}
+.btn:hover { border-color: var(--border-strong); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), color-mix(in oklab, var(--accent) 70%, var(--accent-2)));
+  color: var(--accent-ink); border-color: transparent;
+}
+.btn-danger { color: var(--critical); }
+
+.input {
+  width: 100%; height: 40px; padding: 0 12px; border-radius: 12px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text); font-size: 14px; outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 25%, transparent); }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 32px; padding: 0 12px; border-radius: 999px;
+  font-size: 13px; font-weight: 500; color: var(--text-2);
+  background: transparent; border: 1px solid var(--border);
+  transition: all .15s; white-space: nowrap;
+}
+.chip[aria-pressed="true"] { color: var(--text); background: var(--surface-2); border-color: var(--border-strong); }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 22px; padding: 0 8px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 600;
+  background: var(--surface-2); color: var(--text-2);
+}
+
+.leaflet-tile-pane { filter: var(--map-filter); }
+.leaflet-container { background: var(--surface-solid) !important; font: inherit; }
+
+@keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .55; transform: scale(.85); } }
+.pulse { animation: pulse-dot 1.6s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse { animation: none; }
+}

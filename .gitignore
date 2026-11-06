@@ -1,0 +1,21 @@
+.devdata/
+/build/
+node_modules/
+web/dist/
+daemon/internal/api/dist/*
+!daemon/internal/api/dist/.keep
+*.bin
+*.img
+.DS_Store
+__pycache__/
+
+# Nada de esto debe subirse: credenciales y configuración de una Pi concreta.
+.deploy.env
+.env
+.env.*
+!.deploy.env.example
+*.pem
+*.key
+*.p12
+secrets*
+teslapi-setup-network.txt

@@ -1,0 +1,23 @@
+#!/usr/sbin/nft -f
+# Solo entra lo que la Pi ofrece. NetworkManager añade sus propias tablas en la red del asistente.
+table inet teslapi
+flush table inet teslapi
+table inet teslapi {
+	chain input {
+		type filter hook input priority 0; policy drop;
+		iif lo accept
+		ct state established,related accept
+		ct state invalid drop
+		ip protocol icmp accept
+		meta l4proto ipv6-icmp accept
+		udp sport 67 udp dport 68 accept comment "DHCP"
+		udp sport 547 udp dport 546 accept comment "DHCPv6"
+		udp dport 5353 accept comment "mDNS: teslapi.local"
+		tcp dport { 22, 80, 443 } accept comment "SSH y portal"
+		iifname "wlan0" ip saddr 10.42.0.0/24 udp dport { 53, 67 } accept comment "Red del asistente: DNS y DHCP"
+		iifname "wlan0" ip saddr 10.42.0.0/24 tcp dport 53 accept
+	}
+	chain forward {
+		type filter hook forward priority 0; policy drop;
+	}
+}

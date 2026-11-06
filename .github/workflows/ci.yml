@@ -1,0 +1,67 @@
+name: CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  daemon:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: daemon/go.mod
+      - name: Vet and test
+        working-directory: daemon
+        run: |
+          go vet ./...
+          go vet -tags dev ./...
+          GOOS=linux GOARCH=arm64 go vet ./...
+          go test -race -count=1 ./...
+      - name: Known vulnerabilities
+        working-directory: daemon
+        run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+      - name: Static analysis
+        working-directory: daemon
+        # The excluded rules are noise here: a daemon that manages files and runs system tools by
+        # design, with no shell (G204, G304, G703, G705), root-owned files other services read
+        # (G301, G302, G306), a SHA-1 that only names a profile (G401, G505), a cookie that can only
+        # be Secure over HTTPS (G124) and redirects to names already checked against a list (G710).
+        run: go run github.com/securego/gosec/v2/cmd/gosec@latest -quiet -exclude=G104,G115,G122,G124,G204,G301,G302,G304,G306,G401,G505,G703,G705,G710 ./...
+      - name: Fuzz the disk image parser
+        working-directory: daemon
+        run: go test -run=NONE -fuzz=FuzzDetect -fuzztime=30s ./internal/diskimg
+  portal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build
+        working-directory: web
+        run: |
+          npm ci
+          npm run build
+          npx svelte-check --threshold error
+      - name: Translations
+        run: node web/scripts/check-i18n.mjs
+      - name: Audit production dependencies
+        working-directory: web
+        run: npm audit --omit=dev --audit-level=moderate
+  scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ShellCheck
+        run: shellcheck -S warning scripts/*.sh setup/*.sh system/*.sh
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
