@@ -24,6 +24,10 @@ Security hardening before the first public release.
 - `Host`, `Origin` and `Content-Type` checks, Content-Security-Policy and other security headers.
 - Login back-off per IP, stream limit and server timeouts.
 
+### Documented
+
+- Cooling: a heatsink on the Pi Zero 2 W lowered the peak temperature while archiving from 62.3 °C to 53.7 °C (bench measurement, see the README).
+
 ### Fixed
 
 - Path traversal through the NAS folder, which allowed reading any file as root.

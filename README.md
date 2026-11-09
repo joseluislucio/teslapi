@@ -64,6 +64,24 @@ own Wi-Fi network.
 - A NAS or computer with an SMB share, and 2.4 GHz Wi-Fi reaching the car
 - Go (see `daemon/go.mod`) and Node 22 to build
 
+## Cooling
+
+A [heatsink](https://www.amazon.es/dp/B09QMBCXLB) on the Pi Zero 2 W lowers its temperature while archiving. Measured on
+the bench with the same copy (2.6 GB of real data read from the card and written to the NAS over
+Wi-Fi), indoors on a table, same position, no case:
+
+| | Without heatsink | With heatsink |
+|---|---|---|
+| Temperature at start | 51.5 °C | 41.3 °C |
+| Maximum | 62.3 °C | 53.7 °C |
+| Average | 58.3 °C | 51.0 °C |
+
+The maximum is 8.6 °C lower and the average 7.3 °C lower. Part of that gap is the different starting
+point: the first run began right after boot, and the rise from the start was similar (10.8 °C
+without, 12.4 °C with). Neither run was throttled (`throttled` stayed `0x0`), so the Pi works without it; the heatsink
+only gives more margin. Both runs were on a table, not in the glovebox, so they say nothing about
+a hot car.
+
 ## Getting started
 
 1. Write the card. Run the script with no arguments to list the cards it can see:

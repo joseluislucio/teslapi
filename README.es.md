@@ -64,6 +64,24 @@ y, si puedes, su propia red Wi-Fi.
 - Un NAS u ordenador con un recurso SMB, y Wi-Fi de 2,4 GHz que llegue al coche
 - Go (ver `daemon/go.mod`) y Node 22 para compilar
 
+## Refrigeración
+
+Un [disipador](https://www.amazon.es/dp/B09QMBCXLB) en la Pi Zero 2 W baja su temperatura mientras archiva. Medido en la
+mesa con la misma copia (2,6 GB de datos reales leídos de la tarjeta y escritos en el NAS por
+Wi-Fi), en interior sobre una mesa, en la misma posición y sin caja:
+
+| | Sin disipador | Con disipador |
+|---|---|---|
+| Temperatura al empezar | 51,5 °C | 41,3 °C |
+| Máxima | 62,3 °C | 53,7 °C |
+| Media | 58,3 °C | 51,0 °C |
+
+La máxima es 8,6 °C menor y la media 7,3 °C menor. Parte de esa diferencia viene del punto de
+partida: la primera prueba empezó justo tras arrancar, y la subida desde el inicio fue parecida
+(10,8 °C sin disipador, 12,4 °C con él). Ninguna prueba llegó a limitar la CPU (`throttled` se
+quedó en `0x0`), así que la Pi funciona sin él; el disipador solo da más margen. Las dos pruebas
+fueron sobre una mesa, no en la guantera, así que no dicen nada del calor dentro del coche.
+
 ## Puesta en marcha
 
 1. Graba la tarjeta. Ejecuta el script sin argumentos para ver las tarjetas que detecta:

@@ -228,6 +228,11 @@ step_readonly() {
 	mkdir -p /data/state/timesync
 	grep -q "/var/lib/systemd/timesync" /etc/fstab || \
 		echo "/data/state/timesync /var/lib/systemd/timesync none bind,x-systemd.requires-mounts-for=/data 0 0" >> /etc/fstab
+	# El journal persiste en /data (la raíz es de solo lectura y /var/log es tmpfs).
+	mkdir -p /data/journal
+	chmod 755 /data/journal
+	grep -q "/var/log/journal" /etc/fstab || \
+		echo "/data/journal /var/log/journal none bind,x-mount.mkdir,x-systemd.requires-mounts-for=/data 0 0" >> /etc/fstab
 	sed -i -E 's#^(\S+\s+/\s+ext4\s+)(\S+)#\1defaults,noatime,ro#' /etc/fstab
 	sed -i -E 's#^(\S+\s+/boot/firmware\s+vfat\s+)(\S+)#\1defaults,ro#' /etc/fstab
 	ln -sf /run/NetworkManager/resolv.conf /etc/resolv.conf
